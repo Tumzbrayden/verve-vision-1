@@ -1,0 +1,3225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>VV1 | Verve Vision 1</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+
+/* =========================================================
+   VV1 CORE
+========================================================= */
+
+:root{
+    --black:#050505;
+    --panel:#0d0d0f;
+    --panel2:#15151a;
+
+    --green:#39FF14;
+
+    --purple:#8A2BE2;
+    --purple2:#5d18a8;
+
+    --white:#f5f5f5;
+    --muted:#999;
+
+    --red:#ff3131;
+
+    --line:#27272c;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--black);
+    color:var(--white);
+    font-family:Arial,Helvetica,sans-serif;
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(5,5,5,.96);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+}
+
+.header-inner{
+    max-width:1250px;
+    margin:auto;
+    padding:15px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    cursor:pointer;
+}
+
+.brand-mark{
+    width:38px;
+    height:38px;
+    border:2px solid var(--green);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--green);
+    font-weight:900;
+    font-size:12px;
+    box-shadow:0 0 15px rgba(57,255,20,.2);
+}
+
+.brand-text{
+    line-height:1;
+}
+
+.brand-text strong{
+    display:block;
+    font-size:18px;
+    letter-spacing:2px;
+}
+
+.brand-text span{
+    color:var(--green);
+    font-size:9px;
+    letter-spacing:3px;
+}
+
+.clock{
+    color:var(--green);
+    font-family:monospace;
+    font-size:13px;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+nav{
+    display:flex;
+    overflow-x:auto;
+    border-top:1px solid #151515;
+}
+
+nav button{
+    flex:1;
+    min-width:95px;
+    padding:13px 8px;
+    background:none;
+    border:0;
+    color:#888;
+    font-weight:bold;
+    font-size:11px;
+    letter-spacing:1px;
+    cursor:pointer;
+}
+
+nav button.active{
+    color:var(--green);
+    border-bottom:2px solid var(--green);
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+main{
+    max-width:1250px;
+    margin:auto;
+    padding:20px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:390px;
+    border:1px solid #25252b;
+    border-radius:20px;
+    overflow:hidden;
+    position:relative;
+
+    background:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(138,43,226,.3),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(57,255,20,.08),
+            transparent 35%
+        ),
+
+        #09090b;
+
+    display:flex;
+    align-items:flex-end;
+}
+
+.hero-content{
+    padding:30px;
+    max-width:750px;
+}
+
+.live-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:6px 10px;
+    border-radius:4px;
+    background:#190909;
+    color:#ff5555;
+    font-size:10px;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-bottom:15px;
+}
+
+.live-dot{
+    width:7px;
+    height:7px;
+    background:#ff3131;
+    border-radius:50%;
+    box-shadow:0 0 10px red;
+}
+
+.hero h1{
+    font-size:clamp(34px,7vw,70px);
+    line-height:.95;
+    margin-bottom:15px;
+}
+
+.hero h1 span{
+    color:var(--green);
+}
+
+.hero p{
+    color:#aaa;
+    max-width:650px;
+    line-height:1.6;
+    margin-bottom:22px;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.btn{
+    border:0;
+    padding:13px 17px;
+    border-radius:7px;
+    font-weight:bold;
+    font-size:11px;
+    letter-spacing:1px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.btn-green{
+    background:var(--green);
+    color:#000;
+}
+
+.btn-purple{
+    background:var(--purple);
+    color:white;
+}
+
+.btn-dark{
+    background:#17171b;
+    color:white;
+    border:1px solid #303036;
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+.player-wrap{
+    margin-top:20px;
+    background:#080808;
+    border:1px solid #25252b;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.player{
+    aspect-ratio:16/9;
+    background:#000;
+    position:relative;
+    overflow:hidden;
+}
+
+#vv1LivePlayer{
+    width:100%;
+    height:100%;
+    display:block;
+    background:#000;
+    object-fit:contain;
+}
+
+
+/* =========================================================
+   PLAYER OVERLAYS
+========================================================= */
+
+.player-status{
+    position:absolute;
+    top:15px;
+    left:15px;
+    z-index:20;
+
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    background:rgba(5,5,5,.88);
+    border:1px solid #333;
+
+    padding:7px 10px;
+
+    font-size:9px;
+    color:var(--green);
+    letter-spacing:1px;
+
+    border-radius:4px;
+
+    pointer-events:none;
+}
+
+.player-status .live-dot{
+    width:6px;
+    height:6px;
+}
+
+.player-message{
+    position:absolute;
+    inset:0;
+
+    z-index:15;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    color:#777;
+    font-size:11px;
+    letter-spacing:2px;
+
+    padding:30px;
+
+    pointer-events:none;
+}
+
+.player-source{
+    position:absolute;
+    right:15px;
+    bottom:15px;
+
+    z-index:20;
+
+    font-size:9px;
+    color:#aaa;
+
+    background:rgba(0,0,0,.75);
+
+    padding:5px 8px;
+    border-radius:3px;
+
+    pointer-events:none;
+}
+
+
+/* =========================================================
+   EXIT FULLSCREEN BUTTON
+========================================================= */
+
+.vv1-exit-fullscreen{
+    position:absolute;
+
+    top:18px;
+    right:18px;
+
+    z-index:100;
+
+    background:rgba(5,5,5,.88);
+
+    color:white;
+
+    border:1px solid var(--green);
+
+    padding:10px 13px;
+
+    border-radius:6px;
+
+    font-size:9px;
+    font-weight:bold;
+
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:.2s;
+}
+
+.vv1-exit-fullscreen:hover{
+    background:var(--green);
+    color:#000;
+}
+
+.player:fullscreen .vv1-exit-fullscreen,
+.player:-webkit-full-screen .vv1-exit-fullscreen,
+.player:-moz-full-screen .vv1-exit-fullscreen{
+    opacity:1;
+    pointer-events:auto;
+}
+
+
+/* =========================================================
+   PLAYER CONTROLS
+========================================================= */
+
+.player-controls{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    background:#0b0b0d;
+
+    border-top:1px solid #202025;
+}
+
+.player-control-buttons{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.player-info{
+    font-size:9px;
+    color:#777;
+    letter-spacing:1px;
+}
+
+.player-live{
+    color:var(--red);
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   FULLSCREEN BUTTON
+========================================================= */
+
+.fullscreen-btn{
+    background:
+        linear-gradient(
+            135deg,
+            var(--green),
+            #25d80d
+        );
+
+    color:#000;
+
+    border:0;
+
+    padding:12px 15px;
+
+    border-radius:7px;
+
+    font-size:10px;
+
+    font-weight:900;
+
+    letter-spacing:1px;
+
+    cursor:pointer;
+}
+
+.fullscreen-btn:hover{
+    box-shadow:
+        0 0 18px rgba(57,255,20,.4);
+}
+
+
+/* =========================================================
+   TRUE BROWSER FULLSCREEN
+========================================================= */
+
+.player:fullscreen,
+.player:-webkit-full-screen,
+.player:-moz-full-screen{
+
+    width:100vw !important;
+    height:100vh !important;
+
+    max-width:none !important;
+    max-height:none !important;
+
+    aspect-ratio:auto !important;
+
+    border:0 !important;
+    border-radius:0 !important;
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(57,255,20,.30),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(138,43,226,.38),
+            transparent 40%
+        ),
+
+        #050505;
+
+    z-index:999999;
+}
+
+
+/* =========================================================
+   FULLSCREEN AMBIENT LIGHT
+========================================================= */
+
+.player:fullscreen::before,
+.player:-webkit-full-screen::before,
+.player:-moz-full-screen::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-20%;
+
+    z-index:0;
+
+    pointer-events:none;
+
+    background:
+
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(57,255,20,.28),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 90% 85%,
+            rgba(138,43,226,.38),
+            transparent 40%
+        );
+
+    animation:
+        vv1Ambient 8s ease-in-out infinite alternate;
+}
+
+@keyframes vv1Ambient{
+
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.08);
+    }
+}
+
+
+/* =========================================================
+   FULLSCREEN VIDEO
+========================================================= */
+
+.player:fullscreen #vv1LivePlayer,
+.player:-webkit-full-screen #vv1LivePlayer,
+.player:-moz-full-screen #vv1LivePlayer{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100% !important;
+    height:100% !important;
+
+    object-fit:contain;
+
+    z-index:2;
+
+    background:transparent;
+}
+
+
+/* =========================================================
+   FULLSCREEN OVERLAYS
+========================================================= */
+
+.player:fullscreen .player-status,
+.player:-webkit-full-screen .player-status,
+.player:-moz-full-screen .player-status{
+
+    top:20px;
+    left:20px;
+
+    z-index:50;
+}
+
+.player:fullscreen .player-source,
+.player:-webkit-full-screen .player-source,
+.player:-moz-full-screen .player-source{
+
+    right:20px;
+    bottom:20px;
+
+    z-index:50;
+}
+
+.player:fullscreen .player-message,
+.player:-webkit-full-screen .player-message,
+.player:-moz-full-screen .player-message{
+
+    z-index:40;
+}
+
+
+/* =========================================================
+   PORTRAIT FULLSCREEN
+========================================================= */
+
+@media (orientation:portrait){
+
+    .player:fullscreen,
+    .player:-webkit-full-screen,
+    .player:-moz-full-screen{
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        background:
+
+            radial-gradient(
+                circle at 0% 0%,
+                rgba(57,255,20,.38),
+                transparent 42%
+            ),
+
+            radial-gradient(
+                circle at 100% 100%,
+                rgba(138,43,226,.48),
+                transparent 45%
+            ),
+
+            #050505;
+    }
+
+    .player:fullscreen #vv1LivePlayer,
+    .player:-webkit-full-screen #vv1LivePlayer,
+    .player:-moz-full-screen #vv1LivePlayer{
+
+        position:relative;
+
+        inset:auto;
+
+        width:100vw !important;
+
+        height:auto !important;
+
+        aspect-ratio:16/9;
+
+        max-width:100vw;
+
+        max-height:100vh;
+
+        object-fit:contain;
+
+        background:#000;
+
+        box-shadow:
+
+            0 0 40px rgba(57,255,20,.15),
+
+            0 0 80px rgba(138,43,226,.15);
+    }
+}
+
+
+/* =========================================================
+   LANDSCAPE FULLSCREEN
+========================================================= */
+
+@media (orientation:landscape){
+
+    .player:fullscreen #vv1LivePlayer,
+    .player:-webkit-full-screen #vv1LivePlayer,
+    .player:-moz-full-screen #vv1LivePlayer{
+
+        width:100vw !important;
+        height:100vh !important;
+
+        object-fit:contain;
+    }
+}
+
+
+/* =========================================================
+   JAVASCRIPT FALLBACK FULLSCREEN
+========================================================= */
+
+.player.vv1-fallback-fullscreen{
+
+    position:fixed !important;
+
+    inset:0 !important;
+
+    width:100vw !important;
+    height:100vh !important;
+
+    max-width:none !important;
+    max-height:none !important;
+
+    aspect-ratio:auto !important;
+
+    border-radius:0 !important;
+
+    border:0 !important;
+
+    z-index:999999 !important;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(57,255,20,.35),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(138,43,226,.45),
+            transparent 45%
+        ),
+
+        #050505 !important;
+}
+
+.player.vv1-fallback-fullscreen #vv1LivePlayer{
+
+    width:100% !important;
+    height:100% !important;
+
+    object-fit:contain;
+
+    background:#000;
+}
+
+.player.vv1-fallback-fullscreen .vv1-exit-fullscreen{
+
+    opacity:1;
+    pointer-events:auto;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section{
+    margin-top:28px;
+}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:13px;
+}
+
+.section-head h2{
+    font-size:17px;
+}
+
+.section-head span{
+    color:var(--green);
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px,1fr)
+        );
+
+    gap:12px;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card{
+    background:var(--panel);
+
+    border:1px solid #222229;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.card:hover{
+    border-color:var(--purple);
+    transform:translateY(-2px);
+}
+
+.card-icon{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:9px;
+
+    background:#17131e;
+
+    color:var(--green);
+
+    margin-bottom:13px;
+
+    font-weight:900;
+}
+
+.card h3{
+    font-size:14px;
+    margin-bottom:6px;
+}
+
+.card p{
+    color:#888;
+    font-size:11px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   CHANNEL CARDS
+========================================================= */
+
+.channel-card{
+    position:relative;
+}
+
+.channel-card.active-channel{
+    border-color:var(--green);
+
+    box-shadow:
+        0 0 18px rgba(57,255,20,.08);
+}
+
+.channel-live{
+    display:inline-flex;
+    align-items:center;
+
+    gap:6px;
+
+    color:#ff5555;
+
+    font-size:8px;
+
+    font-weight:bold;
+
+    letter-spacing:1px;
+
+    margin-bottom:10px;
+}
+
+.channel-live-dot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#ff3131;
+
+    box-shadow:0 0 8px red;
+}
+
+
+/* =========================================================
+   GUIDE
+========================================================= */
+
+.guide{
+    display:grid;
+    gap:9px;
+}
+
+.program{
+    display:grid;
+
+    grid-template-columns:
+        90px 1fr auto;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:15px;
+
+    background:var(--panel);
+
+    border:1px solid #222229;
+
+    border-radius:9px;
+}
+
+.program-time{
+    color:var(--green);
+
+    font-family:monospace;
+
+    font-weight:bold;
+}
+
+.program-title{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.program-desc{
+    color:#777;
+
+    font-size:10px;
+
+    margin-top:4px;
+}
+
+.program-tag{
+    color:#888;
+
+    font-size:8px;
+
+    letter-spacing:1px;
+}
+
+
+/* =========================================================
+   TICKER
+========================================================= */
+
+.ticker{
+    position:fixed;
+
+    bottom:0;
+    left:0;
+    right:0;
+
+    z-index:999;
+
+    background:#080808;
+
+    border-top:1px solid #25252b;
+
+    display:flex;
+
+    height:34px;
+}
+
+.ticker-label{
+    background:var(--green);
+
+    color:#000;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 13px;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    letter-spacing:1px;
+}
+
+.ticker-content{
+    flex:1;
+
+    overflow:hidden;
+
+    display:flex;
+
+    align-items:center;
+
+    white-space:nowrap;
+}
+
+.ticker-text{
+    color:#bbb;
+
+    font-size:10px;
+
+    animation:
+        ticker 25s linear infinite;
+
+    padding-left:100%;
+}
+
+@keyframes ticker{
+
+    from{
+        transform:translateX(0);
+    }
+
+    to{
+        transform:translateX(-100%);
+    }
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    padding:50px 20px 70px;
+
+    text-align:center;
+
+    color:#555;
+
+    font-size:9px;
+
+    letter-spacing:1px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+    main{
+        padding:12px;
+    }
+
+    .header-inner{
+        padding:12px;
+    }
+
+    .clock{
+        font-size:10px;
+    }
+
+    .hero{
+        min-height:420px;
+    }
+
+    .hero-content{
+        padding:22px;
+    }
+
+    .hero h1{
+        font-size:43px;
+    }
+
+    .grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .program{
+        grid-template-columns:
+            70px 1fr;
+    }
+
+    .program-tag{
+        display:none;
+    }
+
+    .btn{
+        width:100%;
+    }
+
+    .player-controls{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .player-control-buttons{
+        width:100%;
+    }
+
+    .player-control-buttons .btn,
+    .player-control-buttons .fullscreen-btn{
+        flex:1;
+        width:auto;
+    }
+
+    .vv1-exit-fullscreen{
+        top:12px;
+        right:12px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media(max-width:380px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =========================================================
+   FULLSCREEN MOBILE UI
+========================================================= */
+
+@media(max-width:600px){
+
+    .player:fullscreen .player-status,
+    .player:-webkit-full-screen .player-status,
+    .player:-moz-full-screen .player-status{
+
+        top:12px;
+        left:12px;
+
+        font-size:8px;
+    }
+
+    .player:fullscreen .player-source,
+    .player:-webkit-full-screen .player-source,
+    .player:-moz-full-screen .player-source{
+
+        right:12px;
+        bottom:12px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header>
+
+    <div class="header-inner">
+
+        <div class="brand"
+             onclick="showPage('home')">
+
+            <div class="brand-mark">
+                VV1
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    VERVE VISION
+                </strong>
+
+                <span>
+                    MASTER STATION
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="clock"
+             id="clock">
+
+            00:00:00 EAT
+
+        </div>
+
+    </div>
+
+
+    <nav>
+
+        <button class="active"
+                onclick="showPage('home',this)">
+
+            HOME
+
+        </button>
+
+
+        <button onclick="showPage('watch',this)">
+
+            WATCH
+
+        </button>
+
+
+        <button onclick="showPage('guide',this)">
+
+            GUIDE
+
+        </button>
+
+
+        <button onclick="showPage('station',this)">
+
+            VV1
+
+        </button>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+
+<!-- =========================================================
+     HOME
+========================================================= -->
+
+<section id="home"
+         class="page active">
+
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <div class="live-tag">
+
+                <span class="live-dot"></span>
+
+                VV1 LIVE
+
+            </div>
+
+
+            <h1>
+
+                THIS IS<br>
+
+                <span>
+                    VERVE.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                A new-generation television experience
+                combining live television, sport, music
+                and original programming under one
+                broadcast identity.
+
+            </p>
+
+
+            <div class="actions">
+
+                <button class="btn btn-green"
+                        onclick="showPage('watch')">
+
+                    WATCH NOW
+
+                </button>
+
+
+                <button class="btn btn-purple"
+                        onclick="showPage('watch')">
+
+                    LIVE TV
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACCESS -->
+
+    <div class="section">
+
+        <div class="section-head">
+
+            <h2>
+                QUICK ACCESS
+            </h2>
+
+            <span>
+                VV1 SYSTEM
+            </span>
+
+        </div>
+
+
+        <div class="grid">
+
+
+            <div class="card"
+                 onclick="showPage('watch')">
+
+                <div class="card-icon">
+                    ▶
+                </div>
+
+                <h3>
+                    WATCH VV1
+                </h3>
+
+                <p>
+                    Enter the main Verve Vision
+                    live television experience.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="selectChannel('aljazeera')">
+
+                <div class="card-icon">
+                    AJ
+                </div>
+
+                <h3>
+                    WORLD NEWS
+                </h3>
+
+                <p>
+                    Watch Al Jazeera English
+                    live through VV1.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="selectChannel('cbs')">
+
+                <div class="card-icon">
+                    CBS
+                </div>
+
+                <h3>
+                    CBS NEWS
+                </h3>
+
+                <p>
+                    Watch CBS News 24/7
+                    live through VV1.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="showPage('guide')">
+
+                <div class="card-icon">
+                    EPG
+                </div>
+
+                <h3>
+                    TV GUIDE
+                </h3>
+
+                <p>
+                    See what's scheduled across
+                    the VV1 network.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ON VV1 -->
+
+    <div class="section">
+
+        <div class="section-head">
+
+            <h2>
+                ON VV1
+            </h2>
+
+            <span>
+                LIVE TELEVISION
+            </span>
+
+        </div>
+
+
+        <div class="grid">
+
+
+            <div class="card"
+                 onclick="selectChannel('aljazeera')">
+
+                <div class="card-icon">
+                    N
+                </div>
+
+                <h3>
+                    WORLD NEWS
+                </h3>
+
+                <p>
+                    International news coverage
+                    available through the live TV system.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="showPage('watch')">
+
+                <div class="card-icon">
+                    S
+                </div>
+
+                <h3>
+                    SPORTS
+                </h3>
+
+                <p>
+                    Sports programming, events
+                    and analysis.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="showPage('watch')">
+
+                <div class="card-icon">
+                    M
+                </div>
+
+                <h3>
+                    MUSIC
+                </h3>
+
+                <p>
+                    Music television, charts
+                    and artist programming.
+                </p>
+
+            </div>
+
+
+            <div class="card"
+                 onclick="showPage('watch')">
+
+                <div class="card-icon">
+                    O
+                </div>
+
+                <h3>
+                    ORIGINALS
+                </h3>
+
+                <p>
+                    Entertainment and
+                    documentary programming.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     WATCH
+========================================================= -->
+
+<section id="watch"
+         class="page">
+
+
+    <div class="section-head">
+
+        <h2>
+            WATCH
+        </h2>
+
+        <span id="watchStatus">
+            LIVE TELEVISION
+        </span>
+
+    </div>
+
+
+    <!-- PLAYER -->
+
+    <div class="player-wrap">
+
+        <div class="player"
+             id="vv1PlayerContainer">
+
+
+            <video
+                id="vv1LivePlayer"
+                controls
+                autoplay
+                playsinline>
+            </video>
+
+
+            <div class="player-status"
+                 id="playerStatus">
+
+                <span class="live-dot"></span>
+
+                <span id="playerChannelName">
+                    AL JAZEERA ENGLISH • LIVE
+                </span>
+
+            </div>
+
+
+            <div id="playerMessage"
+                 class="player-message">
+
+                CONNECTING TO LIVE FEED...
+
+            </div>
+
+
+            <div class="player-source"
+                 id="playerSource">
+
+                HLS • AL JAZEERA ENGLISH
+
+            </div>
+
+
+            <!-- EXIT FULLSCREEN -->
+
+            <button
+                id="vv1ExitFullscreen"
+                class="vv1-exit-fullscreen"
+                onclick="exitVV1Fullscreen()">
+
+                ✕ EXIT FULLSCREEN
+
+            </button>
+
+        </div>
+
+
+        <!-- PLAYER CONTROLS -->
+
+        <div class="player-controls">
+
+            <div class="player-info">
+
+                SOURCE:
+
+                <span class="player-live"
+                      id="playerSourceLabel">
+
+                    LIVE HLS
+
+                </span>
+
+            </div>
+
+
+            <div class="player-control-buttons">
+
+                <button class="btn btn-dark"
+                        onclick="reloadLive()">
+
+                    ↻ RECONNECT
+
+                </button>
+
+
+                <button class="fullscreen-btn"
+                        onclick="enterVV1Fullscreen()">
+
+                    ⛶ FULL SCREEN
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LIVE CHANNELS -->
+
+    <div class="section">
+
+        <div class="section-head">
+
+            <h2>
+                LIVE CHANNELS
+            </h2>
+
+            <span>
+                NETWORKS
+            </span>
+
+        </div>
+
+
+        <div class="grid">
+
+
+            <!-- AL JAZEERA -->
+
+            <div id="channel-aljazeera"
+                 class="card channel-card active-channel"
+                 onclick="selectChannel('aljazeera')">
+
+                <div class="channel-live">
+
+                    <span class="channel-live-dot"></span>
+
+                    LIVE HLS
+
+                </div>
+
+
+                <div class="card-icon">
+                    AJ
+                </div>
+
+
+                <h3>
+                    AL JAZEERA ENGLISH
+                </h3>
+
+
+                <p>
+                    International news and
+                    global current affairs.
+                </p>
+
+            </div>
+
+
+            <!-- CBS -->
+
+            <div id="channel-cbs"
+                 class="card channel-card"
+                 onclick="selectChannel('cbs')">
+
+                <div class="channel-live">
+
+                    <span class="channel-live-dot"></span>
+
+                    LIVE HLS
+
+                </div>
+
+
+                <div class="card-icon">
+                    CBS
+                </div>
+
+
+                <h3>
+                    CBS NEWS 24/7
+                </h3>
+
+
+                <p>
+                    CBS News 24/7 live television
+                    through the VV1 HLS player.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTENT CATEGORIES -->
+
+    <div class="section">
+
+        <div class="grid">
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    N
+                </div>
+
+                <h3>
+                    VV1 NEWS
+                </h3>
+
+                <p>
+                    Live international news
+                    television.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    S
+                </div>
+
+                <h3>
+                    VV1 SPORTS
+                </h3>
+
+                <p>
+                    Sports events, analysis,
+                    results and shows.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    M
+                </div>
+
+                <h3>
+                    VV1 MUSIC
+                </h3>
+
+                <p>
+                    Music television, charts
+                    and artist programming.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    O
+                </div>
+
+                <h3>
+                    VV1 ORIGINALS
+                </h3>
+
+                <p>
+                    Entertainment and
+                    documentary programming.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     GUIDE
+========================================================= -->
+
+<section id="guide"
+         class="page">
+
+    <div class="section-head">
+
+        <h2>
+            PROGRAMME GUIDE
+        </h2>
+
+        <span>
+            TODAY • EAT
+        </span>
+
+    </div>
+
+
+    <div class="guide">
+
+
+        <div class="program">
+
+            <div class="program-time">
+                06:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    VERVE MORNING
+                </div>
+
+                <div class="program-desc">
+                    Headlines, markets, weather
+                    and the day's biggest stories.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                LIVE
+            </div>
+
+        </div>
+
+
+        <div class="program">
+
+            <div class="program-time">
+                09:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    THE BRIEF
+                </div>
+
+                <div class="program-desc">
+                    A fast-moving international
+                    television briefing.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                NEWS
+            </div>
+
+        </div>
+
+
+        <div class="program">
+
+            <div class="program-time">
+                13:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    VV1 MIDDAY
+                </div>
+
+                <div class="program-desc">
+                    Midday news, business and
+                    world developments.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                NEWS
+            </div>
+
+        </div>
+
+
+        <div class="program">
+
+            <div class="program-time">
+                16:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    VERSE
+                </div>
+
+                <div class="program-desc">
+                    Music, culture and
+                    entertainment.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                MUSIC
+            </div>
+
+        </div>
+
+
+        <div class="program">
+
+            <div class="program-time">
+                19:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    THE WORLD TONIGHT
+                </div>
+
+                <div class="program-desc">
+                    The major stories shaping
+                    the world today.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                PRIME
+            </div>
+
+        </div>
+
+
+        <div class="program">
+
+            <div class="program-time">
+                21:00
+            </div>
+
+            <div>
+
+                <div class="program-title">
+                    VV1 AFTER DARK
+                </div>
+
+                <div class="program-desc">
+                    Long-form interviews,
+                    analysis and documentaries.
+                </div>
+
+            </div>
+
+            <div class="program-tag">
+                ORIGINAL
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STATION
+========================================================= -->
+
+<section id="station"
+         class="page">
+
+
+    <div class="hero"
+         style="min-height:300px;">
+
+        <div class="hero-content">
+
+            <div class="live-tag">
+                VV1 NETWORK
+            </div>
+
+
+            <h1>
+                VERVE<br>
+
+                <span>
+                    VISION 1
+                </span>
+            </h1>
+
+
+            <p>
+                A fictional next-generation
+                broadcast network designed around
+                news, sport, music, culture and
+                original programming.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <div class="section-head">
+
+            <h2>
+                VV1 ORIGINALS
+            </h2>
+
+            <span>
+                COMING SOON
+            </span>
+
+        </div>
+
+
+        <div class="grid">
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    VS
+                </div>
+
+                <h3>
+                    VERVE SPORTS
+                </h3>
+
+                <p>
+                    Football, basketball,
+                    motorsport and sports culture.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    FC
+                </div>
+
+                <h3>
+                    FINANCE CENTRAL
+                </h3>
+
+                <p>
+                    Markets, business, fintech
+                    and personal finance.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    DS
+                </div>
+
+                <h3>
+                    THE DEEP SIGNAL
+                </h3>
+
+                <p>
+                    Long-form investigations,
+                    technology and society.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-icon">
+                    NX
+                </div>
+
+                <h3>
+                    VV1 NEXT
+                </h3>
+
+                <p>
+                    Young creators, technology,
+                    culture and future ideas.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+    VV1 • VERVE VISION ONE
+
+    <br><br>
+
+    A CONCEPT BROADCAST INTERFACE
+
+</footer>
+
+
+<!-- =========================================================
+     TICKER
+========================================================= -->
+
+<div class="ticker">
+
+    <div class="ticker-label">
+        VV1
+    </div>
+
+    <div class="ticker-content">
+
+        <div class="ticker-text">
+
+            WELCOME TO VERVE VISION 1 •
+
+            LIVE TELEVISION • SPORTS • MUSIC • ORIGINALS •
+
+            WORLD NEWS • BUSINESS • TECHNOLOGY •
+
+            VV1 IS ONLINE
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   VV1 PAGE NAVIGATION
+========================================================= */
+
+function showPage(pageId, button, autoStart = true){
+
+    document.querySelectorAll(".page")
+        .forEach(page => {
+
+            page.classList.remove("active");
+
+        });
+
+
+    const page =
+        document.getElementById(pageId);
+
+
+    if(page){
+
+        page.classList.add("active");
+
+    }
+
+
+    document.querySelectorAll("nav button")
+        .forEach(btn => {
+
+            btn.classList.remove("active");
+
+        });
+
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+
+    if(
+        pageId === "watch" &&
+        autoStart
+    ){
+
+        setTimeout(() => {
+
+            startLive();
+
+        },150);
+
+    }
+
+}
+
+
+/* =========================================================
+   CHANNEL DATABASE
+========================================================= */
+
+const CHANNELS = {
+
+    aljazeera:{
+
+        name:
+            "AL JAZEERA ENGLISH",
+
+        shortName:
+            "AL JAZEERA ENGLISH • LIVE",
+
+        sourceLabel:
+            "HLS • AL JAZEERA ENGLISH",
+
+        sources:[
+
+            "https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8",
+
+            "https://live-hls-web-aje-gcp.thehlive.com/AJE/index.m3u8"
+
+        ]
+
+    },
+
+
+    cbs:{
+
+        name:
+            "CBS NEWS 24/7",
+
+        shortName:
+            "CBS NEWS 24/7 • LIVE",
+
+        sourceLabel:
+            "HLS • CBS NEWS 24/7",
+
+        sources:[
+
+            "https://cbsn-us.cbsnstream.cbsnews.com/out/v1/55a8648e8f134e82a470f83d562deeca/master.m3u8"
+
+        ]
+
+    }
+
+};
+
+
+/* =========================================================
+   CURRENT CHANNEL STATE
+========================================================= */
+
+let currentChannel =
+    "aljazeera";
+
+let currentSource =
+    0;
+
+let hls =
+    null;
+
+
+/* =========================================================
+   PLAYER UI
+========================================================= */
+
+function updatePlayerUI(){
+
+    const channel =
+        CHANNELS[currentChannel];
+
+
+    if(!channel){
+        return;
+    }
+
+
+    const name =
+        document.getElementById(
+            "playerChannelName"
+        );
+
+
+    const source =
+        document.getElementById(
+            "playerSource"
+        );
+
+
+    const sourceLabel =
+        document.getElementById(
+            "playerSourceLabel"
+        );
+
+
+    const watchStatus =
+        document.getElementById(
+            "watchStatus"
+        );
+
+
+    const message =
+        document.getElementById(
+            "playerMessage"
+        );
+
+
+    if(name){
+        name.textContent =
+            channel.shortName;
+    }
+
+
+    if(source){
+        source.textContent =
+            channel.sourceLabel;
+    }
+
+
+    if(sourceLabel){
+        sourceLabel.textContent =
+            "LIVE HLS";
+    }
+
+
+    if(watchStatus){
+        watchStatus.textContent =
+            channel.name;
+    }
+
+
+    if(message){
+        message.textContent =
+            "CONNECTING TO " +
+            channel.name +
+            "...";
+    }
+
+}
+
+
+/* =========================================================
+   ACTIVE CHANNEL
+========================================================= */
+
+function updateActiveChannel(){
+
+    document.querySelectorAll(
+        ".channel-card"
+    ).forEach(card => {
+
+        card.classList.remove(
+            "active-channel"
+        );
+
+    });
+
+
+    const active =
+        document.getElementById(
+            "channel-" +
+            currentChannel
+        );
+
+
+    if(active){
+
+        active.classList.add(
+            "active-channel"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   START LIVE
+========================================================= */
+
+function startLive(){
+
+    const video =
+        document.getElementById(
+            "vv1LivePlayer"
+        );
+
+
+    if(!video){
+        return;
+    }
+
+
+    const channel =
+        CHANNELS[currentChannel];
+
+
+    if(!channel){
+        return;
+    }
+
+
+    if(hls){
+
+        hls.destroy();
+
+        hls = null;
+
+    }
+
+
+    const sources =
+        channel.sources;
+
+
+    const source =
+        sources[currentSource];
+
+
+    updatePlayerUI();
+
+    updateActiveChannel();
+
+
+    console.log(
+        "VV1 LIVE →",
+        channel.name,
+        source
+    );
+
+
+    /*
+       Native HLS.
+    */
+
+    if(
+        video.canPlayType(
+            "application/vnd.apple.mpegurl"
+        )
+    ){
+
+        video.src =
+            source;
+
+        video.load();
+
+
+        video.play()
+            .then(() => {
+
+                const message =
+                    document.getElementById(
+                        "playerMessage"
+                    );
+
+                if(message){
+                    message.textContent = "";
+                }
+
+            })
+            .catch(() => {
+
+                console.log(
+                    "Autoplay blocked — press play."
+                );
+
+            });
+
+
+        return;
+
+    }
+
+
+    /*
+       HLS.js.
+    */
+
+    if(
+        typeof Hls !== "undefined" &&
+        Hls.isSupported()
+    ){
+
+        hls =
+            new Hls({
+
+                enableWorker:true,
+
+                lowLatencyMode:true,
+
+                backBufferLength:30,
+
+                maxBufferLength:30,
+
+                manifestLoadingMaxRetry:3,
+
+                levelLoadingMaxRetry:3,
+
+                fragLoadingMaxRetry:3
+
+            });
+
+
+        hls.loadSource(
+            source
+        );
+
+
+        hls.attachMedia(
+            video
+        );
+
+
+        hls.on(
+            Hls.Events.MANIFEST_PARSED,
+            () => {
+
+                const message =
+                    document.getElementById(
+                        "playerMessage"
+                    );
+
+
+                if(message){
+                    message.textContent = "";
+                }
+
+
+                video.play()
+                    .catch(error => {
+
+                        if(
+                            error.name ===
+                            "NotAllowedError"
+                        ){
+
+                            console.log(
+                                "Autoplay blocked — press play."
+                            );
+
+                        }
+
+                    });
+
+            }
+        );
+
+
+        hls.on(
+            Hls.Events.ERROR,
+            (event,data) => {
+
+                console.error(
+                    "VV1 HLS ERROR:",
+                    currentChannel,
+                    data
+                );
+
+
+                if(data.fatal){
+
+                    if(
+                        currentSource <
+                        sources.length - 1
+                    ){
+
+                        currentSource++;
+
+                        console.log(
+                            "VV1 → trying backup source"
+                        );
+
+                        startLive();
+
+                    }else{
+
+                        showLiveError();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+    }else{
+
+        showLiveError();
+
+    }
+
+}
+
+
+/* =========================================================
+   LIVE ERROR
+========================================================= */
+
+function showLiveError(){
+
+    const video =
+        document.getElementById(
+            "vv1LivePlayer"
+        );
+
+
+    const message =
+        document.getElementById(
+            "playerMessage"
+        );
+
+
+    if(message){
+
+        message.textContent =
+            "UNABLE TO LOAD " +
+            CHANNELS[currentChannel].name +
+            " LIVE FEED";
+
+    }
+
+
+    if(video){
+
+        video.pause();
+
+        video.removeAttribute("src");
+
+        video.load();
+
+    }
+
+
+    console.log(
+        "VV1: No working stream available for",
+        currentChannel
+    );
+
+}
+
+
+/* =========================================================
+   ENTER FULLSCREEN
+========================================================= */
+
+function enterVV1Fullscreen(){
+
+    const player =
+        document.getElementById(
+            "vv1PlayerContainer"
+        );
+
+
+    if(!player){
+        return;
+    }
+
+
+    /*
+       Remove fallback first.
+    */
+
+    player.classList.remove(
+        "vv1-fallback-fullscreen"
+    );
+
+
+    /*
+       IMPORTANT:
+       requestFullscreen is called directly
+       from the user's button/card click.
+       Do NOT put this inside setTimeout.
+    */
+
+    try{
+
+        if(
+            player.requestFullscreen
+        ){
+
+            const promise =
+                player.requestFullscreen();
+
+            if(
+                promise &&
+                promise.catch
+            ){
+
+                promise.catch(error => {
+
+                    console.warn(
+                        "VV1 fullscreen request failed:",
+                        error
+                    );
+
+                    useVV1FullscreenFallback(
+                        player
+                    );
+
+                });
+
+            }
+
+        }else if(
+            player.webkitRequestFullscreen
+        ){
+
+            player.webkitRequestFullscreen();
+
+        }else if(
+            player.webkitEnterFullscreen
+        ){
+
+            player.webkitEnterFullscreen();
+
+        }else{
+
+            useVV1FullscreenFallback(
+                player
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "VV1 fullscreen error:",
+            error
+        );
+
+        useVV1FullscreenFallback(
+            player
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FULLSCREEN FALLBACK
+========================================================= */
+
+function useVV1FullscreenFallback(player){
+
+    player.classList.add(
+        "vv1-fallback-fullscreen"
+    );
+
+}
+
+
+/* =========================================================
+   EXIT FULLSCREEN
+========================================================= */
+
+function exitVV1Fullscreen(){
+
+    const player =
+        document.getElementById(
+            "vv1PlayerContainer"
+        );
+
+
+    /*
+       Browser fullscreen.
+    */
+
+    try{
+
+        if(
+            document.fullscreenElement
+        ){
+
+            document.exitFullscreen();
+
+        }else if(
+            document.webkitFullscreenElement
+        ){
+
+            if(
+                document.webkitExitFullscreen
+            ){
+
+                document.webkitExitFullscreen();
+
+            }
+
+        }else if(
+            document.mozFullScreenElement
+        ){
+
+            if(
+                document.mozCancelFullScreen
+            ){
+
+                document.mozCancelFullScreen();
+
+            }
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "VV1 exit fullscreen error:",
+            error
+        );
+
+    }
+
+
+    /*
+       CSS fallback.
+    */
+
+    if(player){
+
+        player.classList.remove(
+            "vv1-fallback-fullscreen"
+        );
+
+    }
+
+
+    unlockOrientation();
+
+}
+
+
+/* =========================================================
+   ORIENTATION LOCK
+========================================================= */
+
+async function lockVV1Landscape(){
+
+    try{
+
+        if(
+            screen.orientation &&
+            screen.orientation.lock
+        ){
+
+            await screen.orientation.lock(
+                "landscape"
+            );
+
+            console.log(
+                "VV1 → LANDSCAPE LOCK"
+            );
+
+        }
+
+    }catch(error){
+
+        /*
+           Some browsers don't allow
+           orientation locking.
+        */
+
+        console.log(
+            "VV1: Landscape orientation lock unavailable."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ORIENTATION UNLOCK
+========================================================= */
+
+function unlockOrientation(){
+
+    try{
+
+        if(
+            screen.orientation &&
+            screen.orientation.unlock
+        ){
+
+            screen.orientation.unlock();
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "VV1: Orientation unlock unavailable."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FULLSCREEN CHANGE
+========================================================= */
+
+document.addEventListener(
+    "fullscreenchange",
+    handleFullscreenChange
+);
+
+
+/*
+   WebKit fullscreen change.
+*/
+
+document.addEventListener(
+    "webkitfullscreenchange",
+    handleFullscreenChange
+);
+
+
+function handleFullscreenChange(){
+
+    const player =
+        document.getElementById(
+            "vv1PlayerContainer"
+        );
+
+
+    if(!player){
+        return;
+    }
+
+
+    const isFullscreen =
+        document.fullscreenElement === player ||
+        document.webkitFullscreenElement === player ||
+        document.mozFullScreenElement === player;
+
+
+    if(isFullscreen){
+
+        /*
+           The fullscreen transition has now
+           happened. This is the correct point
+           to request landscape orientation.
+        */
+
+        lockVV1Landscape();
+
+    }else{
+
+        unlockOrientation();
+
+        player.classList.remove(
+            "vv1-fallback-fullscreen"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECT CHANNEL
+========================================================= */
+
+function selectChannel(channel){
+
+    if(!CHANNELS[channel]){
+        return;
+    }
+
+
+    currentChannel =
+        channel;
+
+
+    currentSource =
+        0;
+
+
+    /*
+       Change page WITHOUT scheduling
+       another startLive().
+    */
+
+    showPage(
+        "watch",
+        null,
+        false
+    );
+
+
+    /*
+       Start selected channel immediately.
+    */
+
+    startLive();
+
+
+    /*
+       Scroll toward player.
+    */
+
+    const player =
+        document.getElementById(
+            "vv1PlayerContainer"
+        );
+
+
+    if(player){
+
+        player.scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+    }
+
+
+    /*
+       IMPORTANT:
+       Fullscreen request remains directly
+       inside the original channel click.
+    */
+
+    enterVV1Fullscreen();
+
+}
+
+
+/* =========================================================
+   RECONNECT
+========================================================= */
+
+function reloadLive(){
+
+    currentSource =
+        0;
+
+    startLive();
+
+}
+
+
+/* =========================================================
+   EAT CLOCK
+========================================================= */
+
+function updateClock(){
+
+    const now =
+        new Date();
+
+
+    const utc =
+        now.getTime() +
+        now.getTimezoneOffset() *
+        60000;
+
+
+    const eat =
+        new Date(
+            utc +
+            3 *
+            60 *
+            60000
+        );
+
+
+    const h =
+        String(
+            eat.getHours()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const m =
+        String(
+            eat.getMinutes()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const s =
+        String(
+            eat.getSeconds()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const clock =
+        document.getElementById(
+            "clock"
+        );
+
+
+    if(clock){
+
+        clock.textContent =
+            `${h}:${m}:${s} EAT`;
+
+    }
+
+}
+
+
+setInterval(
+    updateClock,
+    1000
+);
+
+
+updateClock();
+
+
+/* =========================================================
+   MOBILE TICKER
+========================================================= */
+
+if(
+    window.innerWidth < 600
+){
+
+    const ticker =
+        document.querySelector(
+            ".ticker-text"
+        );
+
+
+    if(ticker){
+
+        ticker.style.animationDuration =
+            "35s";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE VV1
+========================================================= */
+
+updatePlayerUI();
+
+updateActiveChannel();
+
+startLive();
+
+</script>
+
+</body>
+</html>
